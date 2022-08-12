@@ -1,3 +1,4 @@
+window.addEventListener('DOMContentLoaded', (event) => {
 const salary = document.querySelector("#salary");
 const output = document.querySelector(".salary-output");
 output.textContent = salary.value;
@@ -18,10 +19,12 @@ name.addEventListener("input",function(){
         textError.textContent = e;
     }
 });
+});
 const save = () => {
     try{
         let employeePayrollData = createEmployeePayroll();
         createAndUpdateStorage(employeePayrollData);
+        alert("added sucessfully");
     }catch (e){
         return;
     }
@@ -33,7 +36,7 @@ function createAndUpdateStorage(employeePayrollData){
     }else{
         employeePayrollList = [employeePayrollData]
     }
-    alert(employeePayrollList.toString());
+    //alert(employeePayrollList.toString());
     localStorage.setItem("EmployeePayrollList", JSON.stringify(employeePayrollList))
 }
 const createEmployeePayroll = () => {
@@ -50,8 +53,9 @@ const createEmployeePayroll = () => {
     employeePayrollData.salary = getInputValueById("#salary");
     employeePayrollData.note = getInputValueById("#notes");
     let date = getInputValueById("#day")+" "+getInputValueById("#month")+" "+getInputValueById("#year");
-    employeePayrollData.date = Date.parse(date);
-    alert(employeePayrollData.toString());
+    //employeePayrollData.date = Date.parse(date);
+    employeePayrollData.startDate = date;
+    //alert(employeePayrollData.toString());
     return employeePayrollData;
 }
 const getSelectedValues = (propertyValue) => {
@@ -66,6 +70,10 @@ const getInputValueById = (id) => {
     let value = document.querySelector(id).value;
     return value;
 }
+const getInputElementValue = (id) => {
+    let value = document.getElementById(id).value;
+    return value;
+}
 
 const resetForm = () =>{
     setValue("#name", "");
@@ -76,7 +84,7 @@ const resetForm = () =>{
     setValue("#notes", "");
     setValue("#day", "1");
     setValue("#month", "January");
-    setValue("#year", "2021");
+    setValue("#year", "2022");
 }
 
 const unsetSelectedValues = (propertyValue) => {
@@ -84,6 +92,9 @@ const unsetSelectedValues = (propertyValue) => {
     allItems.forEach(item => {
         item.checked = false;
     });
+}
+const setTextValue = (id, value) => {
+    const element = document.querySelector(id); element.textContent = value;
 }
 
 const setValue = (id, value) => {
