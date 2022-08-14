@@ -21,26 +21,95 @@ name.addEventListener("input",function(){
         textError.textContent = e;
     }
 });
+const date = document.querySelector("#date");
+const dateError = document.querySelector(".date-error");
+date.addEventListener("input",function(){
+    let startDate= new Date(Date.parse(getInputValueById('#day')+" "+
+                                        getInputValueById('#month')+" "+
+                                        getInputValueById('#year')+" "));
+    try{
+        (new EmployeePayrollData()).startDate = startDate;
+        dateError.textContent = "";
+    }catch (e){
+        dateError.textContent = e;
+    }
+});
 checkForUpdate();
 });
-const save = () => {
+
+const save = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     try{
-        let employeePayrollData = createEmployeePayroll();
-        createAndUpdateStorage(employeePayrollData);
-        alert("added sucessfully");
+        setEmployeePayrollObject();
+        createAndUpdateStorage();
+        resetForm();
+        window.location.replace(site_properties.home_page);
     }catch (e){
         return;
     }
 }
+const setEmployeePayrollObject = () => {
+    employeePayrollObj._name=getInputValueById('#name');
+    employeePayrollObj._profilePic=getSelectedValues('[name=profile]').pop();
+    employeePayrollObj._gender=getSelectedValues('[name=gender]').pop();
+    employeePayrollObj._department=getSelectedValues('[name=department]');
+    employeePayrollObj._salary=getInputValueById('#salary');
+    employeePayrollObj._notes=getInputValueById('#notes');
+    let date=getInputValueById('#day')+" "+getInputValueById('#month')+" "+
+    getInputValueById('#year');
+    employeePayrollObj._startDate=date;
+}
 function createAndUpdateStorage(employeePayrollData){
     let employeePayrollList = JSON.parse(localStorage.getItem("EmployeePayrollList"));
-    if(employeePayrollList != undefined){
-        employeePayrollList.push(employeePayrollData);
+    if(employeePayrollList){
+        let empPayrollData=employeePayrollList.
+                           find(empData => empData._name == employeePayrollObj._name);
+        if(!empPayrollData){
+        employeePayrollList.push(createEmployeePayrollData());
     }else{
-        employeePayrollList = [employeePayrollData]
+         const index=employeePayrollList
+                     .map(empData => empData._name)
+                     .indexOf(empPayrollData._name);
+        employeePayrollList.splice(index, 1,createEmployeePayrollData(empPayrollData._name));
+        }
+    }else{
+        employeePayrollList=[createEmployeePayrollData()]
     }
-    //alert(employeePayrollList.toString());
     localStorage.setItem("EmployeePayrollList", JSON.stringify(employeePayrollList))
+}
+const createEmployeePayrollData = (id) =>{
+    let employeePayrollData=new EmployeePayrollData();
+    if(!id) employeePayrollData.id=createNewEmployeeId();
+    else employeePayrollData.id=id;
+    setEmployeePayrollData(employeePayrollData);
+    return employeePayrollData;
+}
+const setEmployeePayrollData = (employeePayrollData) => {
+    try{
+        employeePayrollData.name=employeePayrollObj._name;
+    }catch (e){
+        setTextValue('.text-error', e);
+        throw e;
+    }
+    employeePayrollData.profilePic=employeePayrollObj._profilePic;
+    employeePayrollData.gender=employeePayrollObj._gender;
+    employeePayrollData.department=employeePayrollObj._department;
+    employeePayrollData.salary=employeePayrollObj._salary;
+    employeePayrollData.note=employeePayrollObj._notes;
+    try{
+        employeePayrollData.startDate=new Date(Date.parse(employeePayrollObj._startDate));
+    } catch (e) {
+        setTextValue('.date-error',e);
+        throw e;
+    }
+    alert(employeePayrollData.toString());
+}
+const createNewEmployeeId= () => {
+    let empID = localStorage.getItem("EmployeeID");
+    empID=!empID ? 1 : (parseInt(empID)+1).toString();
+    localStorage.setItem("EmployeeID",empID);
+    return empID;
 }
 const createEmployeePayroll = () => {
     let employeePayrollData = new EmployeePayrollData();

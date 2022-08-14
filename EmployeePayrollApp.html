@@ -21,7 +21,7 @@
     </header>
     <!--UC2 Ability to create a Form Header and the Input Text Element for Name-->
     <div id="formId" class="form-content">
-        <form class="form" action="#" onreset="resetForm()" onsubmit="save()">
+        <form class="form" action="#" oncancel="cancelForm()" onreset="resetForm()" onsubmit="save(event)">
         <div class="form-head">
             <h2>Employee Payroll Form</h2>
         </div>
@@ -93,7 +93,7 @@
     <!--Ability to specify the start date with Day, Month and Year as Select Input Item-->
     <div class="row-content">
         <label class="label text" for="startDate">Start Date: </label>
-        <div class="label text">
+        <div class="date">
             <select id="day" name="Day">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -151,6 +151,7 @@
                 <option value="2016">2016</option>
             </select>
         </div>
+        <error-output class="date-error" for="startDate"></error-output>
     </div>
     <!--Ability to add Notes as well as cancel, reset and submit button so as to do some action on form entry-->
     <div class="row-content">
@@ -166,6 +167,8 @@
     </div>    
 </form>
     </div>
-    
+    <script src="../AddEmployeePayroll/new_home.js"></script>
+    <script src="../AddEmployeePayroll/Utility.js"></script>
+    <script src="../AddEmployeePayroll/site_properties.js"></script>
 </body>
 </html>
